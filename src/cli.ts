@@ -4,6 +4,32 @@ import { addVault, viewVault, listVault, deleteVault } from "./vault/vault.js";
 import { info, success, error } from "./utils/logger.js";
 import readline from "readline";
 
+export const askPassword = (prompt: string): Promise<string> => {
+    return new Promise((resolve) => {
+        const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+
+        // Save original write method
+        const stdoutWrite = process.stdout.write.bind(process.stdout);
+
+        // Override write to mask user input
+        process.stdout.write = ((str: string | Uint8Array, ...args: any[]): boolean => {
+            const text = str.toString();
+            if (text.includes(prompt)) {
+                return stdoutWrite(str, ...args);
+            }
+            return stdoutWrite("*".repeat(text.length), ...args);
+        }) as typeof process.stdout.write;
+
+        rl.question(prompt, (password) => {
+            // Restore original write
+            process.stdout.write = stdoutWrite;
+            rl.close();
+            console.log(""); // new line
+            resolve(password);
+        });
+    });
+};
+
 export const runCLI = async (): Promise<void> => {
     const program = new Command();
 
@@ -15,47 +41,41 @@ export const runCLI = async (): Promise<void> => {
     program
         .command("add")
         .argument("<title>", "Title for your codes")
-        .action((title: string) => {
-            const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
-            rl.question("Master password: ", async (password: string) => {
-                rl.close();
-                try {
-                    const codes: string[] = await promptMultiLine(`Enter codes for "${title}"`);
-                    await addVault(title, codes, password);
-                    success(`Saved ${codes.length} codes under "${title}"`);
-                } catch (e: unknown) {
-                    if (e instanceof Error) {
-                        error(e.message);
-                    } else {
-                        error(String(e));
-                    }
+        .action(async (title: string) => {
+            try {
+                const password: string = await askPassword("Master password: ");
+                const codes: string[] = await promptMultiLine(`Enter codes for "${title}"`);
+                await addVault(title, codes, password);
+                success(`Saved ${codes.length} codes under "${title}"`);
+            } catch (e: unknown) {
+                if (e instanceof Error) {
+                    error(e.message);
+                } else {
+                    error(String(e));
                 }
-            });
+            }
         });
 
     program
         .command("view")
         .argument("<title>", "Title to view codes")
-        .action((title: string) => {
-            const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
-            rl.question("Master password: ", async (password: string) => {
-                rl.close();
-                try {
-                    const codes: string[] | undefined = await viewVault(title, password);
-                    if (!codes || codes.length === 0) {
-                        info("No codes found");
-                        return;
-                    }
-                    success(`Codes for "${title}":`);
-                    codes.forEach((c: string, i: number) => console.log(`${i + 1}. ${c}`));
-                } catch (e: unknown) {
-                    if (e instanceof Error) {
-                        error(e.message);
-                    } else {
-                        error(String(e));
-                    }
+        .action(async (title: string) => {
+            try {
+                const password: string = await askPassword("Master password: ");
+                const codes: string[] | undefined = await viewVault(title, password);
+                if (!codes || codes.length === 0) {
+                    info("No codes found");
+                    return;
                 }
-            });
+                success(`Codes for "${title}":`);
+                codes.forEach((c: string, i: number) => console.log(`${i + 1}. ${c}`));
+            } catch (e: unknown) {
+                if (e instanceof Error) {
+                    error(e.message);
+                } else {
+                    error(String(e));
+                }
+            }
         });
 
     program
@@ -84,11 +104,16 @@ export const runCLI = async (): Promise<void> => {
         .argument("<title>", "Title to delete")
         .action(async (title: string) => {
             try {
+                const password: string = await askPassword("Master password: ");
+                // Check password by attempting to decrypt codes
+                const codes = await viewVault(title, password);
+                if (!codes || codes.length === 0) {
+                    info(`No codes found for "${title}", cannot delete.`);
+                    return;
+                }
                 const ok: boolean = await deleteVault(title);
                 if (ok) {
                     success(`Deleted "${title}"`);
-                } else {
-                    info(`Title "${title}" not found`);
                 }
             } catch (e: unknown) {
                 if (e instanceof Error) {

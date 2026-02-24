@@ -1,8 +1,17 @@
 import ChronoDB from "chronodb";
+import path from "path";
+import os from "os";
+import fs from "fs";
+
+const DATA_DIR = path.join(os.homedir(), ".vault");
+
+if (!fs.existsSync(DATA_DIR)) {
+    fs.mkdirSync(DATA_DIR, { recursive: true });
+}
 
 export const db = await ChronoDB.open({
     cloudSync: false,
-    path: "./data",
+    path: DATA_DIR,
 });
 
 export const codesCol = db.col("codes", {
