@@ -11,4 +11,3 @@ export const codesCol = db.col("codes", {
         codes: { type: "array", items: "string" },
     },
 });
-
