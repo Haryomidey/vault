@@ -1,5 +1,5 @@
-import { codesCol } from "./db";
-import { encrypt, decrypt } from "./encryption";
+import { codesCol } from "./db.js";
+import { encrypt, decrypt } from "./encryption.js";
 
 export async function addVault(title: string, codes: string[], password: string) {
     const encCodes = codes.map(c => encrypt(c, password));
@@ -9,12 +9,12 @@ export async function addVault(title: string, codes: string[], password: string)
 export async function viewVault(title: string, password: string) {
     const record = await codesCol.getOne({ title });
     if (!record) return [];
-    return record.codes.map(c => decrypt(c, password));
+    return record.codes.map((c: string) => decrypt(c, password));
 }
 
 export async function listVault() {
     const all = await codesCol.getAll();
-    return all.map(r => r.title);
+    return all.map((r: any) => r.title);
 }
 
 export async function deleteVault(title: string) {
