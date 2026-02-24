@@ -1,122 +1,181 @@
-# Vault CLI
+# 🔐 Vault CLI
 
-A local CLI tool to securely store and manage recovery codes, 2FA codes, or other secret codes. Each set of codes is saved under a **title**, encrypted with a master password. Built with **Node.js**, **TypeScript**, and **ChronoDB**.
+A secure, local-first CLI tool to store and manage recovery codes, 2FA
+backup codes, and other sensitive secrets.
 
----
+Each set of codes is saved under a **title** and encrypted with a
+**master password**.
 
-## Features
+Built with **Node.js**, **TypeScript**, and **ChronoDB**.
 
-- Add codes under a specific title
-- View codes for a title (requires master password)
-- List all saved titles
-- Delete a title
-- Local-first storage using ChronoDB (JSON-based)
-- Password-protected & encrypted data
+------------------------------------------------------------------------
 
----
+## ✨ Features
 
-## Installation
+-   🔒 Store recovery/2FA codes under a custom title\
+-   🔑 Master password protection\
+-   👀 View stored codes (requires password)\
+-   📋 List all saved titles\
+-   🗑 Delete a title and its codes\
+-   💾 Local-first JSON storage (ChronoDB)\
+-   🛡 Persistent brute-force lock (3 failed attempts → 30s lock)\
+-   🔐 Masked password input (hidden typing with backspace support)
 
-Clone the repo:
+------------------------------------------------------------------------
 
-```bash
+## 📦 Installation
+
+### 1️⃣ Clone the repository
+
+``` bash
 git clone <your-repo-url>
 cd vault
+```
 
-Install dependencies:
+### 2️⃣ Install dependencies
 
+Using pnpm:
+
+``` bash
 pnpm install
-# or
+```
+
+Or using npm:
+
+``` bash
 npm install
+```
 
-Build TypeScript:
+### 3️⃣ Build the project
 
+``` bash
 pnpm run build
 # or
 npm run build
-Usage
+```
+
+------------------------------------------------------------------------
+
+## 🚀 Usage
 
 Run the CLI:
 
+``` bash
 pnpm run start -- <command>
 # or
 node dist/index.js <command>
-Commands
+```
 
-Add codes
+------------------------------------------------------------------------
 
+## 📚 Commands
+
+### ➕ Add Codes
+
+``` bash
 vault add "Paystack-Recovery-Codes"
+```
 
-You’ll be prompted for your master password and then to enter codes line by line. End with an empty line.
+You will be prompted to:
 
-View codes
+1.  Enter your master password\
+2.  Enter codes line by line\
+3.  Press Enter on an empty line to finish
 
+------------------------------------------------------------------------
+
+### 👀 View Codes
+
+``` bash
 vault view "Paystack-Recovery-Codes"
+```
 
-You’ll be prompted for your master password to decrypt and display the codes.
+You must enter the correct master password to decrypt and display the
+codes.
 
-List titles
+If you fail 3 times, the vault is locked for 30 seconds.
 
+------------------------------------------------------------------------
+
+### 📋 List Titles
+
+``` bash
 vault list
+```
 
-Shows all saved titles.
+Displays all saved titles.
 
-Delete a title
+------------------------------------------------------------------------
 
+### 🗑 Delete a Title
+
+``` bash
 vault delete "Paystack-Recovery-Codes"
+```
 
-Deletes the title and all associated codes.
+Requires master password confirmation before deletion.
 
-Folder Structure
-vault/
-├─ src/
-│  ├─ cli.ts             # CLI entry point
-│  ├─ index.ts           # Main entry for Node
-│  ├─ vault/
-│  │  └─ vault.ts        # Vault functions (add, view, list, delete)
-│  └─ utils/
-│     ├─ input.ts        # Multi-line input helper
-│     └─ logger.ts       # Colored logging (info, success, error)
-├─ dist/                 # Compiled TypeScript output
-├─ package.json
-├─ tsconfig.json
-└─ README.md
+------------------------------------------------------------------------
 
-⚠️ Do not commit data/ folder to GitHub. It contains encrypted codes.
+## 📁 Project Structure
 
-Development
+    vault/
+    ├─ src/
+    │  ├─ cli.ts
+    │  ├─ index.ts
+    │  ├─ vault/
+    │  │  ├─ vault.ts
+    │  │  └─ lockStore.ts
+    │  └─ utils/
+    │     ├─ input.ts
+    │     └─ logger.ts
+    ├─ dist/
+    ├─ data/
+    ├─ package.json
+    ├─ tsconfig.json
+    └─ README.md
 
-Watch for changes and compile automatically:
+------------------------------------------------------------------------
 
+## ⚠️ Important
+
+Do **NOT** commit the `data/` folder or `.vault-locks.json` file to
+GitHub.
+
+Add this to your `.gitignore`:
+
+    data/
+    .vault-locks.json
+
+------------------------------------------------------------------------
+
+## 🛠 Development
+
+### Watch mode
+
+``` bash
 pnpm tsc --watch
+```
 
-Run CLI locally without building:
+### Run without building
 
+``` bash
 pnpm exec ts-node src/index.ts <command>
-Dependencies
+```
 
-Node.js 18+
+------------------------------------------------------------------------
 
-TypeScript
+## 🔐 Security
 
-ChronoDB – JSON-based local database
+-   Codes are encrypted locally using your master password.
+-   Data never leaves your machine.
+-   Brute-force protection locks access after multiple failures.
+-   Password input is masked in the terminal.
 
-Commander – CLI parser
+⚠️ If you lose your master password, your codes cannot be recovered.
 
-Dev dependencies
+------------------------------------------------------------------------
 
-@types/node – Node type definitions
-
-ts-node – TypeScript runner
-
-Security
-
-Codes are encrypted locally using a master password.
-
-Data never leaves your machine.
-
-Keep your master password safe!
-
-License
+## 📜 License
 
 MIT License
