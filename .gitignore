@@ -1,0 +1,17 @@
+node_modules
+.env
+dist
+scripts
+coverage
+*.log
+.idea
+.vscode
+.DS_Store
+*.tsbuildinfo
+.data
+*.bak
+*.tmp
+*.swp
+.snapshot
+*.swo
+*.swn
