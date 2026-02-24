@@ -21,4 +21,3 @@ export function decrypt(enc: string, password: string) {
     decipher.setAuthTag(tag);
     return decipher.update(encrypted, undefined, "utf8") + decipher.final("utf8");
 }
-

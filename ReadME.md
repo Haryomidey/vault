@@ -1,37 +1,39 @@
-Vault CLI
+# Vault CLI
 
-A local CLI tool to securely store and manage recovery codes, 2FA codes, or other secret codes. Each set of codes is saved under a title, encrypted with a master password. Built with Node.js, TypeScript, and ChronoDB.
+A local CLI tool to securely store and manage recovery codes, 2FA codes, or other secret codes. Each set of codes is saved under a **title**, encrypted with a master password. Built with **Node.js**, **TypeScript**, and **ChronoDB**.
 
-Features
+---
 
-Add codes under a specific title
+## Features
 
-View codes for a title (requires master password)
+- Add codes under a specific title
+- View codes for a title (requires master password)
+- List all saved titles
+- Delete a title
+- Local-first storage using ChronoDB (JSON-based)
+- Password-protected & encrypted data
 
-List all saved titles
+---
 
-Delete a title
-
-Local-first storage using ChronoDB (JSON-based)
-
-Password-protected & encrypted data
-
-Installation
+## Installation
 
 Clone the repo:
 
+```bash
 git clone <your-repo-url>
 cd vault
 
 Install dependencies:
 
 pnpm install
-# or npm install
+# or
+npm install
 
 Build TypeScript:
 
 pnpm run build
-# or npm run build
+# or
+npm run build
 Usage
 
 Run the CLI:
@@ -75,7 +77,6 @@ vault/
 │  └─ utils/
 │     ├─ input.ts        # Multi-line input helper
 │     └─ logger.ts       # Colored logging (info, success, error)
-├─ data/                 # ChronoDB JSON storage (do not commit)
 ├─ dist/                 # Compiled TypeScript output
 ├─ package.json
 ├─ tsconfig.json
@@ -94,18 +95,15 @@ Run CLI locally without building:
 pnpm exec ts-node src/index.ts <command>
 Dependencies
 
-Node.js
- 18+
+Node.js 18+
 
 TypeScript
 
-ChronoDB
- – JSON-based local database
+ChronoDB – JSON-based local database
 
-Commander
- – CLI parser
+Commander – CLI parser
 
-Dev dependencies:
+Dev dependencies
 
 @types/node – Node type definitions
 
