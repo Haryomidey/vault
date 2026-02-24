@@ -45,13 +45,13 @@ Commands
 
 Add codes
 
-vault add "Paystack Recovery Codes"
+vault add "Paystack-Recovery-Codes"
 
 You’ll be prompted for your master password and then to enter codes line by line. End with an empty line.
 
 View codes
 
-vault view "Paystack Recovery Codes"
+vault view "Paystack-Recovery-Codes"
 
 You’ll be prompted for your master password to decrypt and display the codes.
 
@@ -63,7 +63,7 @@ Shows all saved titles.
 
 Delete a title
 
-vault delete "Paystack Recovery Codes"
+vault delete "Paystack-Recovery-Codes"
 
 Deletes the title and all associated codes.
 
